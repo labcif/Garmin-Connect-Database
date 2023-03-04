@@ -1,0 +1,538 @@
+//// -- LEVEL 1
+//// -- Schemas, Tables and References
+
+// Creating tables
+// You can define the tables with full schema names
+Table acclimation_pulse_ox_details {
+  userProfilePk text [pk]
+  startTimestampLocal text 
+  startTimestampGMT text
+  endTimestampGMT text
+  sp02Value integer
+  sp02ValueAverage integer
+  sp02ValuesArray text
+  latestSp02ValueReadingTimeGmt text
+  monitoringEnvironmentValuesArray text
+  date integer [not null] 
+  
+}
+
+// If schema name is omitted, it will default to "public" schema.
+Table activity_chart_data {
+  activityId int [pk]
+  chart_type text [pk]
+  lastUpdated int [not null]
+  calendarDate text
+  chartXList text
+  chartYList text
+}
+
+Table activity_details {
+  activityId int [pk]
+  lastUpdated integer [not null]
+  calendarDate text
+  activityName text
+  description text
+  startTimeGMT text
+  startTimeLocal text
+  activityTypeId integer [not null]
+  activityTypeKey text
+  parentActivityTypeId integer [not null]
+  activityTypeCategory text
+  eventTypeId integer [not null]
+  eventTypeKey text
+  distance real [not null]
+  duration real [not null]
+  movingDuration real [not null]
+  elapsedDuration real [not null]
+  elevationGain real [not null]
+  elevationLoss real [not null]
+  averageSpeed real [not null]
+  maxSpeed real [not null]
+  startLatitude real
+  startLongitude real
+  ownerId integer [not null]
+  ownerDisplayName text
+  ownerFullName text
+  ownerProfileImageUrlSmall text
+  ownerProfileImageUrlMedium text
+  ownerProfileImageUrlLarge text
+  calories real [not null]
+  averageHR real [not null]
+  maxHR real [not null]
+  averageRunningCadenceInStepsPerMinute real [not null]
+  maxRunningCadenceInStepsPerMinute real [not null]
+  averageBikingCadenceInRevPerMinute real [not null]
+  maxBikingCadenceInRevPerMinute real [not null]
+  averageSwimCadenceInStrokesPerMinute real [not null]
+  minSwimCadenceInStrokesPerMinute real [not null]
+  averageSwolf real [not null]
+  activeLengths integer [not null]
+  steps integer [not null]
+  conversationUuid text
+  conversationPk integer [not null]
+  numberOfActivityLikes integer [not null]
+  numberOfActivityComments integer [not null]
+  likedByUser integer [not null]
+  privacy text
+  courseId integer [not null]
+  hasVideo integer [not null]
+  videoUrl text
+  timeZoneId integer [not null]
+  beginTimestamp integer [not null]
+  sportTypeId integer [not null]
+  avgPower real [not null]
+  maxPower real [not null]
+  aerobicTrainingEffect real [not null]
+  strokes real [not null]
+  minSwolf real [not null]
+  avgEfficiency real [not null]
+  minEfficiency real [not null]
+  normPower real [not null]
+  leftBalance real [not null]
+  rightBalance real [not null]
+  max20MinPower real [not null]
+  avgVerticalOscillation real [not null]
+  avgGroundContactTime real [not null]
+  avgStrideLength real [not null]
+  avgFractionalCadence real [not null]
+  maxFractionalCadence real [not null]
+  trainingStressScore real [not null]
+  intensityFactor real [not null]
+  v02MaxValue real [not null]
+  avgVerticalRatio real [not null]
+  avgGroundContactBalance real [not null]
+  avgLactateThresholdBpm real [not null]
+  avgLactateThresholdSpeed real [not null]
+  maxFtp real [not null]
+  avgStrokeDistance real [not null]
+  avgStrokeCadence real [not null]
+  maxStrokeCadence real [not null]
+  parent integer [not null]
+  parentId integer [not null]
+  userPro integer [not null]
+  favorite integer [not null]
+  pr integer [not null]
+  unitId integer [not null]
+  unitKey text
+  factor real [not null]
+  encodedPolyline text
+  lapCount integer [not null]
+  maxDepth real [not null]
+  decoDive integer [not null]
+  divingGas text
+  divingWaterType integer [not null]
+  divingWaterDensity real [not null]
+  activityBottomTime real [not null]
+  surfaceInterval real [not null]
+  totalSurfaceInterval real [not null]
+  maxBottomTime real [not null]
+  workoutTime integer [not null]
+  floorsClimbed integer [not null]
+  avgVerticalSpeed real [not null]
+  scoreType text
+  scoreWithoutHandicap integer [not null]
+  holesCompleted integer [not null]
+  mainLeaderboardRank text
+  typeScore integer [not null]
+  workoutId integer
+  bestLapTime integer [not null]
+  avgRespirationRate real [not null]
+  totalSets integer [not null]
+  activeSets integer [not null]
+  climbRoutes integer [not null]
+  activeSplitTime Rreal [not null]
+  maxDiffKey text
+  totalAscent real [not null]
+  waveCount integer [not null]
+  longestWaveDistance real [not null]
+  avgStress real
+  climbMode text
+}
+ 
+Table activity_polyline {
+  activityId integer [pk]
+  numberOfPoints integer
+  encodedSamples text
+  encodedLevels text
+  maxLat real
+  maxLon real
+  minLat real
+  minLon real
+  startLat real
+  startLon real
+  endLat real
+  endLon real
+}
+
+Table activity_summaries {
+  activityId integer [pk]
+  displayName text
+  startTimeGMT integer [not null]
+  json text
+  lastUpdated integer [not null]
+}
+
+Table atp_activity_grades {
+    activityId integer [pk]
+    calendarDate text
+    lastUpdated integer [not null]
+    rating text
+    localizedRating text
+}
+
+// Creating references
+// You can also define relaionship separately
+// > many-to-one; < one-to-many; - one-to-one; <> many-to-many
+Ref: activity_details.activityId < activity_polyline.activityId
+Ref: activity_details.activityId < activity_summaries.activityId
+Ref: activity_polyline.activityId < activity_summaries.activityId
+Ref: activity_summaries.activityId < atp_activity_grades.activityId
+Ref: activity_details.activityId < atp_activity_grades.activityId
+Ref: activity_polyline.activityId < atp_activity_grades.activityId
+
+Table blood_pressure {
+    version integer [pk]
+    systolic real
+    diastolic real
+    pulse real
+    multiMeasurement integer
+    notes text
+    sourceType text
+    measurementTimestampLocal text
+    measurementTimestampGmt text
+    category text
+    lastUpdated integer [not null]
+    dateInMillis integer
+}
+
+Table blood_pressure_stats {
+    timestampGMT integer [pk]
+    totalMeasurementCount integer [not null]
+    elevatedMeasurementCount integer [not null]
+    lastUpdated integer [not null]
+}
+
+Table device_work_input {
+    inputTimestamp integer [pk]
+    inputAction text [not null]
+    unitId integer [not null]
+    remoteDeviceProfile text [not null]
+    deviceXML blob
+}
+
+Table heartrate_zones {
+    sport text [pk]
+    lastUpdated integer [not null]
+    restingHeartRate integer [not null]
+    zone0Ceiling integer [not null]
+    zone1Ceiling integer [not null]
+    zone2Ceiling integer [not null]
+    zone3Ceiling integer [not null]
+    zone4Ceiling integer [not null]
+    zone5Ceiling integer [not null]
+    custom integer [not null]
+}
+
+Table hrv_status {
+    calendarDate text [pk]
+    weeklyAvg integer
+    lastNightAvg integer
+    lastNight5MinHigh integer
+    baseline text
+    status text
+    feedbackPhrase text
+    createdTimestamp text
+    lastUpdated integer [not null]
+}
+
+Table insights {
+    status text
+    featureId integer [pk]
+    category text
+    createdDateUTC integer [pk]
+    expirationDateUTC integer [not null]
+    cratedDateCentral text
+    title text
+    notification text
+    cardImageURL text
+}
+
+Table intensity_minutes {
+    startOfWeekDate text [pk]
+    lastUpdated integer [not null]
+    moderateIntensityMinutes integer [not null]
+    vigorousIntensityMinutes integer [not null]
+    intensityMinutesGoal integer [not null]
+}
+
+Table jet_lag_status {
+    dailyStatusId integer [pk]
+    tripId integer
+    tripStartDate text
+    tripEndDate text
+    calendarDate text
+    bodyClockDifference integer
+    bodyClockShiftFeedback text
+    bodyClockFeedback text
+    severity integer
+    severityFeedback text
+    travelDirection text
+    suggestions text [not null]
+    currentLocation text
+    currentTimezone text
+    userTimezoneOffset integer
+    flights text [not null]
+    lastUpdated integer [not null]
+}
+
+Table menstrual_cycle_summary {
+  dataDate text
+  startDate text [pk]
+  cycleDay integer
+  periodLength integer
+  currentPhase integer
+  currentPhaseLength integer
+  daysUntilNextPhase integer
+  fertileWindowStartDay integer
+  fertileWindowLength integer
+  predictedCycleLength integer
+  educationContentMod integer 
+  lutealPhaseStart integer
+  pregnancyCycle integer
+  numberOfWeek integer
+  dueDate text
+  deliveryDate text
+  endDate text
+  overlapCycleList text
+  cycleType text
+  predictedCycle integer
+
+  indexes {
+    dataDate [name: 'index_menstrual_cycle_summary_dataDate', unique]
+  }
+}
+
+Table response_cache {
+  requestUrl text [pk]
+  response text
+  lastUpdate integer [not null]
+  maxAge integer [not null]
+  maxStale integer [not null]
+}
+
+Table sleep_detail {
+  calendarDate text [pk]
+  lastUpdated integer [not null]
+  sleepTimeInSeconds integer [not null]
+  napTimeInSeconds integer [not null]
+  sleepWindowConfirmationType text
+  sleepWindowConfirmed integer [not null]
+  sleepStartTimeGMT integer [not null]
+  sleepEndTimeGMT integer [not null]
+  autoSleepStartTimeGMT integer [not null]
+  autoSleepEndTimeGMT integer [not null]
+  deepSleepSeconds integer [not null]
+  lightSleepSeconds integer [not null]
+  remSleepSeconds integer [not null]
+  awakeSleepSeconds integer [not null]
+  deviceRemCapable integer [not null]
+  averageSpO2Value integer [not null]
+  lowestSpO2Value integer [not null]
+  numberOfEventBelowThreshold integer [not null]
+  averageSpo2HRSleep integer [not null]
+  spo2Threshold integer [not null]
+  averageRespirationValue real [not null]
+  lowestRespirationValue real [not null]
+  highestRespirationValue real [not null]
+  sleepFromDevice integer [not null]
+  sleepScore integer
+}
+
+Ref: hrv_status.calendarDate - sleep_detail.calendarDate
+
+Table stats {
+  samplePk integer [pk]
+  startDate integer [not null]
+  endDate integer [not null]
+  weight real [not null]
+  bmi real [not null]
+  bodyFat real [not null]
+  bodyWater real [not null]
+  boneMass integer [not null]
+  muscleMass integer [not null]
+  physiqueRating integer [not null]
+  visceralFat integer [not null]
+  metabolicAge integer [not null]
+  lastUpdated integer [not null]
+}
+
+Table trainig_readiness {
+  calendarDate text [pk]
+  deviceId integer
+  feedbackShort text
+  level text
+  score real
+  timestamp text
+  userProfilePk integer
+  validSleep integer
+  lastUpdated integer [not null]
+}
+
+Ref: hrv_status.calendarDate < trainig_readiness.calendarDate
+Ref: trainig_readiness.calendarDate > sleep_detail.calendarDate
+
+Table training_status {
+  userId integer [pk]
+  trainingStatus integer [not null]
+  trainingBalanceFeedbackPhrase text
+  hasValidTrainingStatus integer [not null]
+  vo2MaxValue integer [not null]
+  vo2MaxFitnessTrend integer [not null]
+  weeklyTrainingLoad integer [not null]
+  loadLevelTrend integer [not null]
+  heatAcclimation integer [not null]
+  altitudeAcclimation real [not null]
+  deviceCount integer [not null]
+  deviceId integer [not null]
+  deviceName text
+  deviceImageURL text
+  lastUpdated integer [not null]
+
+  indexes {
+    userId [name: 'index_training_status_userId', unique]
+  }
+}
+
+Table user_daily_summary {
+  calendarDate text [pk]
+  lastUpdated integer [not null]
+  displayName text
+  totalKilocalories integer [not null]
+  activeKilocalories integer [not null]
+  bmrKilocalories integer [not null]
+  wellnessKilocalories integer [not null]
+  wellnessActiveKilocalories integer [not null]
+  burnedKilocalories integer [not null]
+  consumedKilocalories integer [not null]
+  remainingKilocalories integer [not null]
+  netCalorieGoal integer [not null]
+  netRemainingKilocalories integer [not null]
+  totalSteps integer [not null]
+  dailyStepGoal integer [not null]
+  totalDistanceMetres integer [not null]
+  wellnessDistanceMetres integer [not null]
+  highlyActiveSeconds integer [not null]
+  activeSeconds integer [not null]
+  sedentarySeconds integer [not null]
+  sleepingSeconds integer [not null]
+  moderateIntensityMinutes integer [not null]
+  vigorousIntensityMinutes integer [not null]
+  floorsAscendedInMetres real [not null]
+  floorsDescendedInMetres real [not null]
+  floorsAscended real [not null]
+  floorsDescended real [not null]
+  userFloorsAscendedGoal integer [not null]
+  minHeartRate integer [not null]
+  maxHeartRate integer [not null]
+  restingHeartRate integer [not null]
+  lastSevenDaysAvgRestingHeartRate integer [not null]
+  averageStressLevel integer [not null]
+  maxStressLevel integer [not null]
+  stressDuration integer [not null]
+  restStressDuration integer [not null]
+  activityStressDuration integer [not null]
+  uncategorizedStressDuration integer [not null]
+  totalStressDuration integer [not null]
+  lowStressDuration integer [not null]
+  mediumStressDuration integer [not null]
+  highStressDuration integer [not null]
+  stressPercentage real [not null]
+  restStressPercentage real [not null]
+  activityStressPercentage real [not null]
+  lowStressPercentage real [not null]
+  mediumStressPercentage real [not null]
+  highStressPercentage real [not null]
+  stressQualifier text
+  measureableAwakeDuration integer [not null]
+  measureableAsleepDuration integer [not null]
+  lastSyncTimestampGMT integer [not null]
+  bodyBatteryChargedValue integer [not null]
+  bodyBatteryDrainedValue integer [not null]
+  bodyBatteryHighestValue integer [not null]
+  bodyBatteryLowestValue integer [not null]
+  bodyBatteryMostRecentValue integer [not null]
+  hydrationValueInMl real [not null]
+  hydrationGoalInMl real [not null]
+  averageSpo2 integer [not null]
+  latestSpo2 integer [not null]
+  avgMonitoringEnvironmentAltitude integer [not null]
+  avgWakingRespirationValue integer [not null]
+  highestRespirationValue integer [not null]
+  lowestRespirationValue integer [not null]
+  latestRespirationValue integer [not null]
+  latestRespirationTimeGMT text
+}
+
+Ref: user_daily_summary.calendarDate - sleep_detail.calendarDate
+Ref: user_daily_summary.calendarDate - trainig_readiness.calendarDate
+Ref: user_daily_summary.calendarDate - hrv_status.calendarDate
+
+Table weight {
+  samplePk integer [pk]
+  date integer
+  weight real
+  bmi real
+  bodyFat real
+  bodyWater real
+  boneMass integer
+  muscleMass integer
+  physiqueRating integer
+  visceralFat integer
+  metabolicAge integer
+  caloricIntake integer
+  sourceType text
+  weightDelta real
+  lastUpdated integer [not null]
+}
+
+Ref: weight.samplePk > stats.samplePk
+
+Table wellness_activities {
+  userProfilePk integer [pk]
+  activityUuid text [pk]
+  calendarDate text [pk]
+  startTimestampGMT text
+  endTimestampGMT text
+  startTimestampLocal text
+  endTimestampLocal text
+  activityName text
+  welnessActivityType text
+  notes text
+  rulePK integer
+  deviceMetaData text
+  summaryTypeDataList text
+  timeInZoneList text
+  contentList text
+  lastUpdated integer [not null]
+}
+
+Ref: wellness_activities.calendarDate > user_daily_summary.calendarDate
+Ref: wellness_activities.calendarDate > trainig_readiness.calendarDate
+Ref: wellness_activities.calendarDate > sleep_detail.calendarDate
+Ref: wellness_activities.calendarDate > hrv_status.calendarDate
+
+Table workouts {
+  workoutId integer [pk]
+  lastUpdated integer [not null]
+  atpPlanId integer
+  itpPlanId integer
+  tpPlanId text
+  ownerId integer
+  scheduleDate text
+  scheduleWorkoutId integer
+  workoutName text
+  workoutType text
+  workoutProtected integer
+  raceWorkout integer
+}
